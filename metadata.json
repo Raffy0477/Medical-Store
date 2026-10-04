@@ -1,0 +1,8 @@
+{
+  "name": "MedStore - Medical Store Management Software",
+  "description": "Professional medical store and pharmacy POS, inventory management, stock alerts, purchases, and sales reporting software.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

@@ -1,0 +1,177 @@
+{
+  "entities": {
+    "Product": {
+      "title": "Product",
+      "description": "Medicine or healthcare product inventory item",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "maxLength": 150 },
+        "genericName": { "type": "string", "maxLength": 150 },
+        "company": { "type": "string", "maxLength": 150 },
+        "category": { "type": "string", "maxLength": 100 },
+        "batchNumber": { "type": "string", "maxLength": 100 },
+        "expiryDate": { "type": "string", "maxLength": 30 },
+        "purchasePrice": { "type": "number" },
+        "salePrice": { "type": "number" },
+        "stock": { "type": "number" },
+        "minStock": { "type": "number" },
+        "supplier": { "type": "string", "maxLength": 150 },
+        "description": { "type": "string", "maxLength": 500 },
+        "createdAt": { "type": "string", "maxLength": 50 },
+        "updatedAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["name", "genericName", "batchNumber", "expiryDate", "purchasePrice", "salePrice", "stock", "minStock"]
+    },
+    "Sale": {
+      "title": "Sale",
+      "description": "POS billing transaction invoice record",
+      "type": "object",
+      "properties": {
+        "invoiceNo": { "type": "string", "maxLength": 60 },
+        "customerName": { "type": "string", "maxLength": 150 },
+        "customerPhone": { "type": "string", "maxLength": 50 },
+        "date": { "type": "string", "maxLength": 50 },
+        "subtotal": { "type": "number" },
+        "discount": { "type": "number" },
+        "grandTotal": { "type": "number" },
+        "paid": { "type": "number" },
+        "remaining": { "type": "number" },
+        "paymentMethod": { "type": "string", "maxLength": 50 },
+        "notes": { "type": "string", "maxLength": 500 },
+        "createdAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["invoiceNo", "date", "subtotal", "grandTotal", "paid", "remaining"]
+    },
+    "Purchase": {
+      "title": "Purchase",
+      "description": "Medicine purchase stock-in record",
+      "type": "object",
+      "properties": {
+        "purchaseNo": { "type": "string", "maxLength": 60 },
+        "supplier": { "type": "string", "maxLength": 150 },
+        "medicine": { "type": "string", "maxLength": 150 },
+        "productId": { "type": "string", "maxLength": 128 },
+        "batchNumber": { "type": "string", "maxLength": 100 },
+        "quantity": { "type": "number" },
+        "purchasePrice": { "type": "number" },
+        "totalAmount": { "type": "number" },
+        "expiryDate": { "type": "string", "maxLength": 30 },
+        "purchaseDate": { "type": "string", "maxLength": 50 },
+        "createdAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["purchaseNo", "supplier", "medicine", "batchNumber", "quantity", "purchasePrice", "expiryDate", "purchaseDate"]
+    },
+    "Customer": {
+      "title": "Customer",
+      "description": "Customer contact and ledger record",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "maxLength": 150 },
+        "phone": { "type": "string", "maxLength": 50 },
+        "address": { "type": "string", "maxLength": 300 },
+        "totalPurchases": { "type": "number" },
+        "paidAmount": { "type": "number" },
+        "remainingAmount": { "type": "number" },
+        "createdAt": { "type": "string", "maxLength": 50 },
+        "updatedAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["name"]
+    },
+    "Supplier": {
+      "title": "Supplier",
+      "description": "Medicine supplier and vendor directory record",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "maxLength": 150 },
+        "phone": { "type": "string", "maxLength": 50 },
+        "address": { "type": "string", "maxLength": 300 },
+        "company": { "type": "string", "maxLength": 150 },
+        "totalSupplied": { "type": "number" },
+        "balance": { "type": "number" },
+        "createdAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["name"]
+    },
+    "Expense": {
+      "title": "Expense",
+      "description": "Store operational expense record",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "maxLength": 150 },
+        "amount": { "type": "number" },
+        "category": { "type": "string", "maxLength": 100 },
+        "date": { "type": "string", "maxLength": 50 },
+        "description": { "type": "string", "maxLength": 500 },
+        "createdAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["name", "amount", "date"]
+    },
+    "StockHistory": {
+      "title": "StockHistory",
+      "description": "Audit record of inventory change",
+      "type": "object",
+      "properties": {
+        "productId": { "type": "string", "maxLength": 128 },
+        "productName": { "type": "string", "maxLength": 150 },
+        "type": { "type": "string", "maxLength": 50 },
+        "quantityChange": { "type": "number" },
+        "previousStock": { "type": "number" },
+        "newStock": { "type": "number" },
+        "reference": { "type": "string", "maxLength": 150 },
+        "date": { "type": "string", "maxLength": 50 },
+        "createdAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["productId", "productName", "type", "quantityChange", "previousStock", "newStock", "date"]
+    },
+    "Setting": {
+      "title": "Setting",
+      "description": "Pharmacy store branding and configuration",
+      "type": "object",
+      "properties": {
+        "storeName": { "type": "string", "maxLength": 150 },
+        "address": { "type": "string", "maxLength": 300 },
+        "phone": { "type": "string", "maxLength": 50 },
+        "email": { "type": "string", "maxLength": 100 },
+        "taxNumber": { "type": "string", "maxLength": 100 },
+        "currencySymbol": { "type": "string", "maxLength": 10 },
+        "invoiceFooter": { "type": "string", "maxLength": 500 },
+        "updatedAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["storeName"]
+    }
+  },
+  "firestore": {
+    "/products/{productId}": {
+      "schema": { "$ref": "Product" },
+      "description": "Medicine and health products catalog"
+    },
+    "/sales/{saleId}": {
+      "schema": { "$ref": "Sale" },
+      "description": "Billing transaction invoices"
+    },
+    "/purchases/{purchaseId}": {
+      "schema": { "$ref": "Purchase" },
+      "description": "Stock purchase orders"
+    },
+    "/customers/{customerId}": {
+      "schema": { "$ref": "Customer" },
+      "description": "Customer contacts and credit ledgers"
+    },
+    "/suppliers/{supplierId}": {
+      "schema": { "$ref": "Supplier" },
+      "description": "Supplier contacts and purchase history"
+    },
+    "/expenses/{expenseId}": {
+      "schema": { "$ref": "Expense" },
+      "description": "Store operational expenses"
+    },
+    "/stock_history/{historyId}": {
+      "schema": { "$ref": "StockHistory" },
+      "description": "Stock balance change audit trails"
+    },
+    "/settings/{settingId}": {
+      "schema": { "$ref": "Setting" },
+      "description": "Store configuration and invoice header info"
+    }
+  }
+}

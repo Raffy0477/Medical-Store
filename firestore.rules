@@ -1,0 +1,154 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidProduct(data) {
+      return data.keys().hasAll(['name', 'genericName', 'batchNumber', 'expiryDate', 'purchasePrice', 'salePrice', 'stock', 'minStock'])
+        && data.name is string && data.name.size() > 0 && data.name.size() <= 150
+        && data.genericName is string && data.genericName.size() <= 150
+        && data.batchNumber is string && data.batchNumber.size() > 0 && data.batchNumber.size() <= 100
+        && data.expiryDate is string && data.expiryDate.size() <= 30
+        && data.purchasePrice is number && data.purchasePrice >= 0
+        && data.salePrice is number && data.salePrice >= 0
+        && data.stock is number
+        && data.minStock is number && data.minStock >= 0;
+    }
+
+    function isValidSale(data) {
+      return data.keys().hasAll(['invoiceNo', 'date', 'subtotal', 'grandTotal', 'paid', 'remaining'])
+        && data.invoiceNo is string && data.invoiceNo.size() > 0 && data.invoiceNo.size() <= 60
+        && data.date is string && data.date.size() <= 50
+        && data.subtotal is number && data.subtotal >= 0
+        && data.grandTotal is number && data.grandTotal >= 0
+        && data.paid is number && data.paid >= 0
+        && data.remaining is number;
+    }
+
+    function isValidPurchase(data) {
+      return data.keys().hasAll(['purchaseNo', 'supplier', 'medicine', 'batchNumber', 'quantity', 'purchasePrice', 'expiryDate', 'purchaseDate'])
+        && data.purchaseNo is string && data.purchaseNo.size() > 0 && data.purchaseNo.size() <= 60
+        && data.supplier is string && data.supplier.size() <= 150
+        && data.medicine is string && data.medicine.size() <= 150
+        && data.batchNumber is string && data.batchNumber.size() <= 100
+        && data.quantity is number && data.quantity > 0
+        && data.purchasePrice is number && data.purchasePrice >= 0;
+    }
+
+    function isValidCustomer(data) {
+      return data.keys().hasAll(['name'])
+        && data.name is string && data.name.size() > 0 && data.name.size() <= 150;
+    }
+
+    function isValidSupplier(data) {
+      return data.keys().hasAll(['name'])
+        && data.name is string && data.name.size() > 0 && data.name.size() <= 150;
+    }
+
+    function isValidExpense(data) {
+      return data.keys().hasAll(['name', 'amount', 'date'])
+        && data.name is string && data.name.size() > 0 && data.name.size() <= 150
+        && data.amount is number && data.amount >= 0
+        && data.date is string && data.date.size() <= 50;
+    }
+
+    function isValidStockHistory(data) {
+      return data.keys().hasAll(['productId', 'productName', 'type', 'quantityChange', 'previousStock', 'newStock', 'date'])
+        && data.productId is string && data.productId.size() <= 128
+        && data.productName is string && data.productName.size() <= 150
+        && data.type is string && data.type.size() <= 50
+        && data.quantityChange is number
+        && data.previousStock is number
+        && data.newStock is number;
+    }
+
+    function isValidSetting(data) {
+      return data.keys().hasAll(['storeName'])
+        && data.storeName is string && data.storeName.size() > 0 && data.storeName.size() <= 150;
+    }
+
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Products catalog
+    match /products/{productId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(productId) && isValidProduct(incoming());
+      allow update: if isSignedIn() && isValidId(productId) && isValidProduct(incoming());
+      allow delete: if isSignedIn() && isValidId(productId);
+    }
+
+    // Sales transactions
+    match /sales/{saleId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(saleId) && isValidSale(incoming());
+      allow update: if isSignedIn() && isValidId(saleId) && isValidSale(incoming());
+      allow delete: if isSignedIn() && isValidId(saleId);
+    }
+
+    // Purchases
+    match /purchases/{purchaseId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(purchaseId) && isValidPurchase(incoming());
+      allow update: if isSignedIn() && isValidId(purchaseId) && isValidPurchase(incoming());
+      allow delete: if isSignedIn() && isValidId(purchaseId);
+    }
+
+    // Customers
+    match /customers/{customerId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(customerId) && isValidCustomer(incoming());
+      allow update: if isSignedIn() && isValidId(customerId) && isValidCustomer(incoming());
+      allow delete: if isSignedIn() && isValidId(customerId);
+    }
+
+    // Suppliers
+    match /suppliers/{supplierId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(supplierId) && isValidSupplier(incoming());
+      allow update: if isSignedIn() && isValidId(supplierId) && isValidSupplier(incoming());
+      allow delete: if isSignedIn() && isValidId(supplierId);
+    }
+
+    // Expenses
+    match /expenses/{expenseId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(expenseId) && isValidExpense(incoming());
+      allow update: if isSignedIn() && isValidId(expenseId) && isValidExpense(incoming());
+      allow delete: if isSignedIn() && isValidId(expenseId);
+    }
+
+    // Stock History
+    match /stock_history/{historyId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(historyId) && isValidStockHistory(incoming());
+      allow update: if isSignedIn() && isValidId(historyId) && isValidStockHistory(incoming());
+      allow delete: if isSignedIn() && isValidId(historyId);
+    }
+
+    // Settings
+    match /settings/{settingId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(settingId) && isValidSetting(incoming());
+      allow update: if isSignedIn() && isValidId(settingId) && isValidSetting(incoming());
+      allow delete: if isSignedIn() && isValidId(settingId);
+    }
+  }
+}
